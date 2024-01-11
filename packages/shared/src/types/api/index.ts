@@ -1,2 +1,2 @@
 export * from './Device'
-export * from './api'
+export * from './User'

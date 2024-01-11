@@ -10,6 +10,8 @@ import { User, UserSchema } from '../user/schemas/user.schema'
 import { AuthController } from './auth.controller'
 import { ConfigService } from '../config/config.service'
 import { ConfigModule } from '../config/config.module'
+import { JwtRefreshTokenStrategy } from './strategies/jwtRefreshToken.strategy'
+import { JwtStrategy } from './strategies/jwt.strategy'
 
 @Module({
   imports: [
@@ -33,6 +35,8 @@ import { ConfigModule } from '../config/config.module'
     UserService,
     JwtService,
     LocalStrategy,
+    JwtStrategy,
+    JwtRefreshTokenStrategy,
   ],
   exports: [AuthService],
   controllers: [AuthController],
