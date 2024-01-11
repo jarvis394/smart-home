@@ -155,7 +155,9 @@ const AddDeviceAndAvatar: React.FC = () => {
               alt="User avatar"
               sx={{ width: 32, height: 32 }}
               src={user?.avatarUrl}
-            />
+            >
+              {user?.fullname[0]}
+            </Avatar>
           )}
         </IconButton>
       )}
