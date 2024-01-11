@@ -2,7 +2,8 @@ import { alpha, styled } from '@mui/material'
 import { useState } from 'react'
 import { getTurnedOnState, getOnOffText } from 'src/components/DeviceCard'
 import Switch from 'src/components/Switch'
-import { LightBulb, Kettle, Thermostat } from 'src/types/Device'
+import { LightBulb, Kettle, Thermostat } from '@smart-home/shared'
+import { useToggleDeviceOnOffMutation } from 'src/api/index'
 
 const Root = styled('div')({
   display: 'flex',
@@ -36,6 +37,7 @@ const OnOffButton = styled('label')(({ theme }) => ({
 const OnOff: React.FC<{
   device: LightBulb | Kettle | Thermostat
 }> = ({ device }) => {
+  const [toggle] = useToggleDeviceOnOffMutation()
   const [isTurnedOn, setTurnedOn] = useState(getTurnedOnState(device))
 
   const handleOnOffChange = (
@@ -43,6 +45,11 @@ const OnOff: React.FC<{
     checked: boolean
   ) => {
     setTurnedOn(checked)
+    toggle({ id: device.id })
+      .unwrap()
+      .then((data) => {
+        setTurnedOn(data.state)
+      })
   }
 
   return (

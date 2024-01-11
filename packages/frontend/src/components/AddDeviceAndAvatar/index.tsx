@@ -15,9 +15,10 @@ import { getRouteByAlias } from 'src/utils/getRoutePath'
 import { useNavigate } from 'react-router'
 import { BUTTON_MAX_WIDTH } from 'src/config/constants'
 import { APP_BAR_HEIGHT } from '../AppBar'
-import { useAppSelector } from 'src/store'
+import { useAppDispatch, useAppSelector } from 'src/store'
 import { FetchingState } from 'src/types/FetchingState'
-import axios from 'axios'
+import { logout } from 'src/store/auth'
+import { useLogoutMutation } from 'src/api/index'
 
 const ModalContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -98,11 +99,17 @@ const AccountInfo = styled(Box)(() => ({
   flexGrow: '1',
 }))
 
+const Spinner = styled(CircularProgress)(({ theme }) => ({
+  color: theme.palette.text.secondary,
+}))
+
 const AddDeviceAndAvatar: React.FC = () => {
   const navigate = useNavigate()
+  const [logoutRequest, { isLoading: isLogoutLoading }] = useLogoutMutation()
   const [open, setOpen] = useState(false)
   const user = useAppSelector((store) => store.auth.user)
   const userFetchState = useAppSelector((store) => store.auth.state)
+  const dispatch = useAppDispatch()
 
   const handleOpen = () => {
     if (userFetchState === FetchingState.FULFILLED) {
@@ -115,8 +122,9 @@ const AddDeviceAndAvatar: React.FC = () => {
   }
 
   const handleLogout = () => {
-    axios('/api/user/logout').then(() => {
+    logoutRequest().then(() => {
       setOpen(false)
+      dispatch(logout())
       navigate(getRouteByAlias('login').path)
     })
   }
@@ -178,8 +186,9 @@ const AddDeviceAndAvatar: React.FC = () => {
                     {user?.email}
                   </Typography>
                 </AccountInfo>
-                <IconButton onClick={handleLogout}>
-                  <Logout />
+                <IconButton disabled={isLogoutLoading} onClick={handleLogout}>
+                  {!isLogoutLoading && <Logout />}
+                  {isLogoutLoading && <Spinner size={24} />}
                 </IconButton>
               </AccountBox>
               <ModalPageFooter>

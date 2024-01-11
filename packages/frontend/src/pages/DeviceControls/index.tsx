@@ -1,14 +1,27 @@
-import { IconButton, styled } from '@mui/material'
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  IconButton,
+  styled,
+} from '@mui/material'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { AppBarExtended } from 'src/components/AppBar'
-import { DeviceCapabilityType, DeviceType } from 'src/types/Device'
+import { DeviceCapabilityType, DeviceType } from '@smart-home/shared'
 import { getRouteByAlias } from 'src/utils/getRoutePath'
 import ColorSetting from './ColorSetting'
 import OnOff from './OnOff'
-import { useToggleFavoriteDeviceMutation, useGetDevicesQuery } from 'src/api'
+import {
+  useToggleFavoriteDeviceMutation,
+  useGetDevicesQuery,
+  useDeleteDeviceMutation,
+} from 'src/api'
 import FullScreenSpinner from 'src/components/FullScreenSpinner'
-import { Favorite, FavoriteBorder } from '@mui/icons-material'
+import { DeleteOutlined, Favorite, FavoriteBorder } from '@mui/icons-material'
 
 const Root = styled('div')(({ theme }) => ({
   padding: theme.spacing(1, 2),
@@ -24,8 +37,41 @@ type DeviceControlsPageParams = {
   id: string
 }
 
+type ConfirmDeleteModalProps = {
+  open: boolean
+  onClose: () => void
+  onConfirm: () => void
+}
+
+const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({
+  open,
+  onClose,
+  onConfirm,
+}) => {
+  return (
+    <Dialog open={open} onClose={onClose}>
+      <DialogTitle>Подтверждение</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          Вы точно хотите удалить этот девайс?
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} sx={{ color: 'text.secondary' }} autoFocus>
+          Отмена
+        </Button>
+        <Button onClick={onConfirm} color="error">
+          Удалить
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
+}
+
 const DeviceControls: React.FC = () => {
+  const [isConfirmDeleteModalOpen, setConfirmDeleteModalOpen] = useState(false)
   const [favoriteToggle] = useToggleFavoriteDeviceMutation()
+  const [deleteDevice] = useDeleteDeviceMutation()
   const navigate = useNavigate()
   const { id } = useParams<DeviceControlsPageParams>()
   const { data: devices, isSuccess } = useGetDevicesQuery({})
@@ -53,6 +99,29 @@ const DeviceControls: React.FC = () => {
       })
   }
 
+  const handleDeleteDevice = () => {
+    if (!id) return
+
+    deleteDevice({ id })
+      .unwrap()
+      .then((data) => {
+        data.ok && navigate(getRouteByAlias('devices').path)
+      })
+  }
+
+  const handleConfimDeleteModalOpen = () => {
+    setConfirmDeleteModalOpen(true)
+  }
+
+  const handleConfimDeleteModalClose = () => {
+    setConfirmDeleteModalOpen(false)
+  }
+
+  const handleConfimDelete = () => {
+    handleDeleteDevice()
+    handleConfimDeleteModalClose()
+  }
+
   useEffect(() => {
     if (!device && isSuccess) {
       navigate(getRouteByAlias('devices').path)
@@ -68,14 +137,24 @@ const DeviceControls: React.FC = () => {
       <AppBarExtended
         fixed
         toolbar={
-          <IconButton onClick={toggleFavoriteDevice}>
-            {isFavorite ? <Favorite /> : <FavoriteBorder />}
-          </IconButton>
+          <>
+            <IconButton onClick={handleConfimDeleteModalOpen}>
+              <DeleteOutlined />
+            </IconButton>
+            <IconButton onClick={toggleFavoriteDevice}>
+              {isFavorite ? <Favorite /> : <FavoriteBorder />}
+            </IconButton>
+          </>
         }
         withBackButton
         header={device.name}
       />
       <Root>
+        <ConfirmDeleteModal
+          onClose={handleConfimDeleteModalClose}
+          onConfirm={handleConfimDelete}
+          open={isConfirmDeleteModalOpen}
+        />
         {supportsColorSettings && <ColorSetting device={device} />}
         {supportsOnOff && <OnOff device={device} />}
       </Root>

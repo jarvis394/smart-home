@@ -10,7 +10,7 @@ import { BUTTON_MAX_WIDTH } from 'src/config/constants'
 import { useGetFavoritesDevicesQuery } from 'src/api'
 import FullScreenSpinner from 'src/components/FullScreenSpinner'
 
-const PlaceholderRoot = styled('div')(({ theme }) => ({
+export const PlaceholderRoot = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',

@@ -23,13 +23,13 @@ const Container = styled(SimpleBar)(({ theme }) => ({
   width: '100%',
   background: theme.palette.background.paper,
   zIndex: 1,
-  ['--bottomNavigationHeight']: '0px',
-  ['--appBarHeight']: '0px',
+  '--bottomNavigationHeight': '0px',
+  '--appBarHeight': '0px',
   '&.App--withBottomNavigation': {
-    ['--bottomNavigationHeight']: BOTTOM_NAVIGATION_HEIGHT + 'px',
+    '--bottomNavigationHeight': BOTTOM_NAVIGATION_HEIGHT + 'px',
   },
   '&.App--withFixedAppBar': {
-    ['--appBarHeight']: APP_BAR_HEIGHT + 'px',
+    '--appBarHeight': APP_BAR_HEIGHT + 'px',
   },
 }))
 
@@ -94,9 +94,11 @@ export const App: React.FC = () => {
       (userFetchState === FetchingState.FULFILLED && !user) ||
       userFetchState === FetchingState.REJECTED
     ) {
+      if (route?.alias === 'login' || route?.alias === 'register') return
+
       navigate(getRouteByAlias('login').path)
     }
-  }, [navigate, user, userFetchState])
+  }, [navigate, route?.alias, user, userFetchState])
 
   return (
     <ThemeProvider theme={theme}>

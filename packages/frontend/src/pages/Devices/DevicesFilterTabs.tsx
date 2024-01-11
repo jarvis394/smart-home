@@ -2,7 +2,7 @@ import { alpha, styled } from '@mui/material'
 import cx from 'classnames'
 import React, { useMemo, useRef, useState } from 'react'
 import { getDeviceIcon } from 'src/components/DeviceCard'
-import { DeviceType } from 'src/types/Device'
+import { DeviceType } from '@smart-home/shared'
 import { useHorizontalScroll } from 'src/hooks/useHorizontalScroll'
 
 const DEVICE_TYPES = Object.values(DeviceType) as unknown as DeviceType[]

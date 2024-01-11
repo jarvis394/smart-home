@@ -98,9 +98,11 @@ export type DeviceCapabilityByType<T extends DeviceCapabilityType> = Extract<
 
 export interface BasicDevice {
   id: string
+  userId: string
   name: string
   state: DeviceState
   favorite: boolean
+  type: DeviceType
   capabilities: {
     [Type in DeviceCapabilityType]?: DeviceCapabilityByType<Type>
   }

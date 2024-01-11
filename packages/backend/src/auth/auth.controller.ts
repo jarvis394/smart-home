@@ -15,6 +15,7 @@ import {
   RequestWithJwtPayload,
 } from './strategies/jwtRefreshToken.strategy'
 import { JwtAuthGuard } from './strategies/jwt.strategy'
+import { UserLoginRes, UserRegisterRes } from '@smart-home/shared'
 
 export interface RequestWithUser extends Request {
   user: {
@@ -29,7 +30,7 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req: RequestWithUser) {
+  async login(@Request() req: RequestWithUser): Promise<UserLoginRes> {
     return await this.authService.login(req.user.userId, req.user.email)
   }
 
@@ -42,7 +43,7 @@ export class AuthController {
   @Post('register')
   async register(
     @Body() { email, fullname, password, avatarURL }: RegisterDto
-  ) {
+  ): Promise<UserRegisterRes> {
     return await this.authService.register({
       email,
       fullname,

@@ -7,7 +7,7 @@ import React, { useMemo, useState } from 'react'
 import Slider from 'src/components/Slider'
 import Tabs, { TabsChangeHandler } from 'src/components/Tabs'
 import { ArrayElement } from 'src/types/ArrayElement'
-import { LightBulb, DeviceCapabilityType } from 'src/types/Device'
+import { LightBulb, DeviceCapabilityType } from '@smart-home/shared'
 import exhaustivnessCheck from 'src/utils/exhaustivnessCheck'
 
 const VERTICAL_SLIDER_HEIGHT = 336

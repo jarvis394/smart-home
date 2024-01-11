@@ -75,10 +75,6 @@ const Login: React.FC = () => {
     })
       .unwrap()
       .then((data) => {
-        if (!data.success) {
-          return reject()
-        }
-
         dispatch(setUser(data.user))
         dispatch(setUserFetchingState(FetchingState.FULFILLED))
         navigate(getRouteByAlias('favorites').path)

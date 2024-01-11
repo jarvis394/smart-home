@@ -13,10 +13,12 @@ import DeviceCard, { DeviceCardClickHandler } from 'src/components/DeviceCard'
 import Input from 'src/components/Input'
 import { getRouteByAlias } from 'src/utils/getRoutePath'
 import DevicesFilterTabs from './DevicesFilterTabs'
-import { Device, DeviceType } from 'src/types/Device'
+import { Device, DeviceType } from '@smart-home/shared'
 import { useDebounce } from 'src/hooks/useDebounce'
 import { useGetDevicesQuery } from 'src/api'
 import FullScreenSpinner from 'src/components/FullScreenSpinner'
+import NoDevicesIllustration from 'src/components/svg/NoDevicesIllustration'
+import { PlaceholderRoot } from '../Favorites'
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -57,6 +59,13 @@ const filterDevices: (props: {
   return res
 }
 
+const Placeholder = () => (
+  <PlaceholderRoot>
+    <NoDevicesIllustration />
+    <p>Добавляйте сюда свои девайсы или карточки действий</p>
+  </PlaceholderRoot>
+)
+
 const Devices: React.FC = () => {
   const navigate = useNavigate()
   const { data, isSuccess, isLoading } = useGetDevicesQuery({})
@@ -82,6 +91,10 @@ const Devices: React.FC = () => {
       }),
     [activeFilterDeviceTypes, devices, debouncedQuery]
   )
+  const appBar = useMemo(
+    () => <AppBar fixed header="Девайсы" toolbar={<AddDeviceAndAvatar />} />,
+    []
+  )
 
   const handleDeviceCardClick: DeviceCardClickHandler = (_event, device) => {
     navigate(
@@ -95,9 +108,18 @@ const Devices: React.FC = () => {
     setActiveFilterDeviceTypes(new Set(activeTabs))
   }
 
+  if (isSuccess && devices.length === 0) {
+    return (
+      <>
+        {appBar}
+        <Placeholder />
+      </>
+    )
+  }
+
   return (
     <>
-      <AppBar fixed header="Девайсы" toolbar={<AddDeviceAndAvatar />} />
+      {appBar}
       <SearchAndFiltersContainer>
         <InputContainer>
           <Input

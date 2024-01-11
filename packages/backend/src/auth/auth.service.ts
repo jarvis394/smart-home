@@ -1,10 +1,15 @@
-import { ForbiddenException, Injectable } from '@nestjs/common'
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
 import { UserService } from '../user/user.service'
 import { JwtService } from '@nestjs/jwt'
-import { User } from '../user/schemas/user.schema'
+import { User, UserDocument } from '../user/schemas/user.schema'
 import { ConfigService } from '../config/config.service'
 import { compare } from 'bcryptjs'
 import { RequestWithUser } from './auth.controller'
+import { ApiUser, UserLoginRes } from '@smart-home/shared'
 
 export interface JwtPayload {
   email: string
@@ -18,6 +23,15 @@ export class AuthService {
     private userService: UserService,
     private configService: ConfigService
   ) {}
+
+  serializeUserDocument(user: UserDocument): ApiUser {
+    return {
+      email: user.email,
+      fullname: user.fullname,
+      id: user.id,
+      avatarUrl: user.avatarURL,
+    }
+  }
 
   async updateRefreshToken(userId: string, refreshToken: string) {
     const hashedRefreshToken = await this.userService.hash(refreshToken)
@@ -60,11 +74,16 @@ export class AuthService {
     }
   }
 
-  async login(userId: string, email: string) {
+  async login(userId: string, email: string): Promise<UserLoginRes> {
+    const user = await this.userService.findById(userId)
+    if (!user) {
+      throw new NotFoundException('User not found')
+    }
+
     const tokens = await this.getTokens(userId, email)
     this.updateRefreshToken(userId, tokens.refreshToken)
 
-    return tokens
+    return { user: this.serializeUserDocument(user), tokens }
   }
 
   async logout(userId: string) {
@@ -107,6 +126,6 @@ export class AuthService {
     const tokens = await this.getTokens(user.id, user.email)
     this.updateRefreshToken(user.id, tokens.refreshToken)
 
-    return tokens
+    return { user: this.serializeUserDocument(user), tokens }
   }
 }

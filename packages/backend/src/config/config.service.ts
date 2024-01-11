@@ -26,7 +26,7 @@ export class ConfigService {
   }
 
   get JWT_ACCESS_TOKEN_TTL() {
-    return this.configService.get('JWT_ACCESS_TOKEN_TTL') || '30m'
+    return this.configService.get('JWT_ACCESS_TOKEN_TTL') || '60m'
   }
 
   get JWT_REFRESH_TOKEN_TTL() {

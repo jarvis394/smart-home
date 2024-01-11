@@ -14,7 +14,7 @@ import {
   Kettle,
   Thermostat,
   DeviceState,
-} from 'src/types/Device'
+} from '@smart-home/shared'
 import KettleSVG from 'src/components/svg/Kettle'
 import exhaustivnessCheck from 'src/utils/exhaustivnessCheck'
 

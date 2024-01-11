@@ -3,27 +3,59 @@ import {
   DevicesGetReq,
   FavoriteDeviceReq,
   FavoriteDeviceRes,
-} from 'src/types/api'
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { API_URL } from 'src/config/constants'
-import { UserLoginReq, UserLoginRes } from 'src/types/api/User'
-
-const baseQuery = fetchBaseQuery({
-  baseUrl: API_URL,
-})
+  UserLoginReq,
+  UserLoginRes,
+  UserRegisterReq,
+  UserRegisterRes,
+  AddDeviceRes,
+  AddDeviceReq,
+  ToggleDeviceOnOffRes,
+  ToggleDeviceOnOffReq,
+  DeviceDeleteRes,
+  DeviceDeleteReq,
+} from '@smart-home/shared'
+import { createApi } from '@reduxjs/toolkit/query/react'
+import baseQuery from './customFetchBase'
+import { setAccessToken, setRefreshToken } from 'src/store/auth'
 
 export const apiSlice = createApi({
   baseQuery,
   tagTypes: ['Device', 'User'],
   endpoints: (builder) => ({
-    login: builder.mutation<UserLoginRes, UserLoginReq>({
+    register: builder.mutation<UserRegisterRes, UserRegisterReq>({
       query: (body) => ({
-        url: '/login',
+        url: '/auth/register',
         method: 'POST',
         body,
       }),
-      invalidatesTags: (result, _error, _arg) =>
-        result?.success ? [{ type: 'User', id: result.user.id }] : [],
+      async onQueryStarted(_args, { dispatch, queryFulfilled }) {
+        const { data } = await queryFulfilled
+        dispatch(setAccessToken(data.tokens.accessToken))
+        dispatch(setRefreshToken(data.tokens.refreshToken))
+      },
+      invalidatesTags: (result, _error, _arg) => [
+        { type: 'User', id: result?.user.id },
+      ],
+    }),
+    login: builder.mutation<UserLoginRes, UserLoginReq>({
+      query: (body) => ({
+        url: '/auth/login',
+        method: 'POST',
+        body,
+      }),
+      async onQueryStarted(_args, { dispatch, queryFulfilled }) {
+        const { data } = await queryFulfilled
+        dispatch(setAccessToken(data.tokens.accessToken))
+        dispatch(setRefreshToken(data.tokens.refreshToken))
+      },
+      invalidatesTags: (result, _error, _arg) => [
+        { type: 'User', id: result?.user.id },
+      ],
+    }),
+    logout: builder.mutation<void, void>({
+      query: () => ({
+        url: '/auth/logout',
+      }),
     }),
     getDevices: builder.query<DevicesGetRes, DevicesGetReq>({
       query: () => ({
@@ -63,6 +95,33 @@ export const apiSlice = createApi({
         { type: 'Device', id: arg.id },
       ],
     }),
+    toggleDeviceOnOff: builder.mutation<
+      ToggleDeviceOnOffRes,
+      ToggleDeviceOnOffReq
+    >({
+      query: ({ id }) => ({
+        url: `/devices/${id}/onOff/toggle`,
+        method: 'GET',
+      }),
+      invalidatesTags: (_result, _error, arg) => [
+        { type: 'Device', id: arg.id },
+      ],
+    }),
+    deleteDevice: builder.mutation<DeviceDeleteRes, DeviceDeleteReq>({
+      query: ({ id }) => ({
+        url: `/devices/${id}/delete`,
+        method: 'GET',
+      }),
+      invalidatesTags: ['Device'],
+    }),
+    addDevice: builder.mutation<AddDeviceRes, AddDeviceReq>({
+      query: (body) => ({
+        url: '/devices/add',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['Device'],
+    }),
   }),
 })
 
@@ -71,4 +130,9 @@ export const {
   useGetDevicesQuery,
   useGetFavoritesDevicesQuery,
   useToggleFavoriteDeviceMutation,
+  useLogoutMutation,
+  useRegisterMutation,
+  useAddDeviceMutation,
+  useToggleDeviceOnOffMutation,
+  useDeleteDeviceMutation,
 } = apiSlice

@@ -1,9 +1,4 @@
-import {
-  Device,
-  DeviceCapabilityType,
-  DeviceState,
-  DeviceType,
-} from 'src/types/Device'
+import { Device, DeviceCapabilityType, DeviceState, DeviceType } from '../types'
 
 export const devices: Device[] = [
   {
@@ -11,6 +6,7 @@ export const devices: Device[] = [
     name: 'Xiaomi Yeelight LED Smart Bulb',
     state: DeviceState.ONLINE,
     favorite: true,
+    userId: '1',
     capabilities: {
       [DeviceCapabilityType.COLOR_SETTING]: {
         type: DeviceCapabilityType.COLOR_SETTING,
@@ -38,6 +34,7 @@ export const devices: Device[] = [
     name: 'Xiaomi Yeelight LED Smart Bulb',
     state: DeviceState.ONLINE,
     favorite: true,
+    userId: '1',
     capabilities: {
       [DeviceCapabilityType.COLOR_SETTING]: {
         type: DeviceCapabilityType.COLOR_SETTING,
@@ -65,6 +62,7 @@ export const devices: Device[] = [
     name: 'Xiaomi Kettle 2',
     state: DeviceState.ONLINE,
     favorite: false,
+    userId: '1',
     capabilities: {
       [DeviceCapabilityType.ON_OFF]: {
         type: DeviceCapabilityType.ON_OFF,
@@ -81,6 +79,7 @@ export const devices: Device[] = [
     name: 'Xiaomi Warn Floor',
     state: DeviceState.ONLINE,
     favorite: true,
+    userId: '1',
     capabilities: {
       [DeviceCapabilityType.ON_OFF]: {
         type: DeviceCapabilityType.ON_OFF,
@@ -111,6 +110,7 @@ export const devices: Device[] = [
     name: 'Elgato Eve Degree Connected',
     state: DeviceState.OFFLINE,
     favorite: false,
+    userId: '1',
     capabilities: {
       [DeviceCapabilityType.ON_OFF]: {
         type: DeviceCapabilityType.ON_OFF,
@@ -131,6 +131,7 @@ export const devices: Device[] = [
     name: 'D-link Omna 180 Cam',
     state: DeviceState.ONLINE,
     favorite: true,
+    userId: '1',
     capabilities: {
       [DeviceCapabilityType.VIDEO_STREAM]: {
         type: DeviceCapabilityType.VIDEO_STREAM,

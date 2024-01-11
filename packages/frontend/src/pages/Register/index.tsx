@@ -8,6 +8,10 @@ import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router'
 import { getRouteByAlias } from 'src/utils/getRoutePath'
 import Button from 'src/components/Button'
+import { useAppDispatch } from 'src/store/index'
+import { setUser, setUserFetchingState } from 'src/store/auth'
+import { FetchingState } from 'src/types/FetchingState'
+import { useRegisterMutation } from 'src/api/index'
 
 const Root = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -50,12 +54,34 @@ const Register: React.FC = () => {
     handleSubmit,
     formState: { errors },
     getValues,
-  } = useForm<{ email: string; password: string }>()
+  } = useForm<{ email: string; password: string; fullname: string }>()
+  const dispatch = useAppDispatch()
+  const [registerUser] = useRegisterMutation()
 
   const onSubmit = () => {
-    const { email, password } = getValues()
-    console.log('Entered credentials:', email, password)
-    navigate(getRouteByAlias('favorites').path)
+    const { email, password, fullname } = getValues()
+
+    const reject = () => {
+      dispatch(setUser(null))
+      dispatch(setUserFetchingState(FetchingState.REJECTED))
+    }
+
+    dispatch(setUserFetchingState(FetchingState.PENDING))
+
+    registerUser({
+      email,
+      password,
+      fullname,
+    })
+      .unwrap()
+      .then((data) => {
+        dispatch(setUser(data.user))
+        dispatch(setUserFetchingState(FetchingState.FULFILLED))
+        navigate(getRouteByAlias('favorites').path)
+      })
+      .catch(() => {
+        return reject()
+      })
   }
 
   const handleGoToLoginClick = () => {
@@ -84,6 +110,15 @@ const Register: React.FC = () => {
               type="password"
               fullWidth
               {...register('password', {
+                required: true,
+              })}
+            />
+            <Input
+              placeholder="Имя пользователя"
+              error={!!errors.fullname}
+              type="name"
+              fullWidth
+              {...register('fullname', {
                 required: true,
               })}
             />

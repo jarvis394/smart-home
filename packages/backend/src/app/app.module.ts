@@ -6,6 +6,7 @@ import { UserModule } from '../user/user.module'
 import { AuthModule } from '../auth/auth.module'
 import { ConfigService } from '../config/config.service'
 import { ConfigModule } from '../config/config.module'
+import { DevicesModule } from '../devices/devices.module'
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ConfigModule } from '../config/config.module'
       inject: [ConfigService],
     }),
     UserModule,
+    DevicesModule,
     AuthModule,
   ],
   controllers: [AppController],
