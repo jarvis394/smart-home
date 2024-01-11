@@ -14,10 +14,10 @@ export class Device {
   @Prop({ required: true })
   name: string
 
-  @Prop({ required: true })
+  @Prop({ required: true, enum: Object.keys(DeviceType) })
   type: DeviceType
 
-  @Prop({ required: true, type: DeviceState })
+  @Prop({ required: true, enum: Object.keys(DeviceState) })
   state: DeviceState
 
   @Prop({ required: false, default: false })
