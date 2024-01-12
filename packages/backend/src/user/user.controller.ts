@@ -23,7 +23,10 @@ import { JwtAuthGuard } from '../auth/strategies/jwt.strategy'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { ConfigService } from '../config/config.service'
 import 'multer'
+import { ApiTags, ApiBody, ApiConsumes, ApiBearerAuth } from '@nestjs/swagger'
+import AvatarUploadDto from './dto/avatar-upload.dto'
 
+@ApiTags('user')
 @Controller('user')
 export class UserController {
   constructor(
@@ -33,12 +36,14 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
+  @ApiBearerAuth()
   async getSelf(@Request() req: RequestWithUser): Promise<UserGetSelfRes> {
     return await this.userService.getSelf(req.user.userId)
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('update')
+  @ApiBearerAuth()
   async updateInfo(
     @Request() req: RequestWithUser,
     @Body() update: UserUpdateReq
@@ -49,7 +54,13 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Post('uploadAvatar')
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(
+  @ApiBearerAuth()
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Avatar file in "file" field',
+    type: AvatarUploadDto,
+  })
+  async uploadAvatar(
     @Request() req: RequestWithUser,
     @UploadedFile(
       new ParseFilePipe({

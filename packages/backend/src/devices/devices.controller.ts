@@ -18,7 +18,9 @@ import {
   FavoriteDeviceRes,
   ToggleDeviceOnOffRes,
 } from '@smart-home/shared'
+import { ApiTags } from '@nestjs/swagger'
 
+@ApiTags('devices')
 @Controller('devices')
 export class DevicesController {
   constructor(private readonly devicesService: DevicesService) {}

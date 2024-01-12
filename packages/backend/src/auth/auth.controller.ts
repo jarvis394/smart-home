@@ -16,6 +16,7 @@ import {
 } from './strategies/jwtRefreshToken.strategy'
 import { JwtAuthGuard } from './strategies/jwt.strategy'
 import { UserLoginRes, UserRegisterRes } from '@smart-home/shared'
+import { ApiTags } from '@nestjs/swagger'
 
 export interface RequestWithUser extends Request {
   user: {
@@ -24,6 +25,7 @@ export interface RequestWithUser extends Request {
   }
 }
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
