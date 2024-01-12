@@ -100,7 +100,9 @@ const slice = createSlice({
       }
     },
     logout: (state, _action: PayloadAction<void>) => {
-      state = initialState
+      state.user = null
+      state.state = FetchingState.FULFILLED
+      state.currentRequestId = null
       state.accessToken = null
       state.refreshToken = null
       localStorage.removeItem(ACCESS_TOKEN_KEY)

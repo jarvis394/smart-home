@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { Add, Close, Logout } from '@mui/icons-material'
 import {
   IconButton,
-  Avatar,
   Box,
   Modal,
   Typography,
@@ -167,7 +166,10 @@ const AddDeviceAndAvatar: React.FC = () => {
                 Аккаунт
               </ModalPageHeader>
               <AccountBox>
-                <Avatar src={user?.avatarUrl} />
+                <UserAvatar
+                  avatarUrl={user?.avatarUrl}
+                  fullname={user?.fullname}
+                />
                 <AccountInfo>
                   <Typography
                     variant="body2"

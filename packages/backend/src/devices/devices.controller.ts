@@ -18,7 +18,7 @@ import {
   FavoriteDeviceRes,
   ToggleDeviceOnOffRes,
 } from '@smart-home/shared'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 
 @ApiTags('devices')
 @Controller('devices')
@@ -27,6 +27,7 @@ export class DevicesController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
+  @ApiBearerAuth()
   async getDevices(@Request() req: RequestWithUser): Promise<DevicesGetRes> {
     const devices = await this.devicesService.getDevices(req.user.userId)
     return { devices }
@@ -34,6 +35,7 @@ export class DevicesController {
 
   @UseGuards(JwtAuthGuard)
   @Get('favorites')
+  @ApiBearerAuth()
   async getFavoriteDevices(
     @Request() req: RequestWithUser
   ): Promise<DevicesGetRes> {
@@ -45,6 +47,7 @@ export class DevicesController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':id/favorite')
+  @ApiBearerAuth()
   async toggleFavorite(
     @Request() req: RequestWithUser,
     @Param('id') id: string
@@ -55,6 +58,7 @@ export class DevicesController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':id/onOff/toggle')
+  @ApiBearerAuth()
   async toggleOnOff(
     @Request() req: RequestWithUser,
     @Param('id') id: string
@@ -65,6 +69,7 @@ export class DevicesController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':id/delete')
+  @ApiBearerAuth()
   async delete(
     @Request() req: RequestWithUser,
     @Param('id') id: string
@@ -75,6 +80,7 @@ export class DevicesController {
 
   @UseGuards(JwtAuthGuard)
   @Post('add')
+  @ApiBearerAuth()
   async addDevice(
     @Request() req: RequestWithUser,
     @Body() newDevice: AddDeviceReq
