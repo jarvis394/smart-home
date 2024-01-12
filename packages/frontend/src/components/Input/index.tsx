@@ -15,6 +15,7 @@ const StyledInput = styled(Input)(({ theme }) => ({
   boxShadow: '0 0 0 2px inset ' + theme.palette.background.default,
   border: 'none',
   maxWidth: BUTTON_MAX_WIDTH,
+  height: 52,
   '&.MuiInput-root.Mui-error': {
     boxShadow: '0 0 0 2px inset ' + theme.palette.error.main,
   },

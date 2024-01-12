@@ -7,10 +7,14 @@ import {
 } from '@nestjs/common'
 import { compare, hash } from 'bcryptjs'
 import { User, UserDocument } from './schemas/user.schema'
-import { Model, UpdateQuery } from 'mongoose'
+import { Model, UpdateQuery, Document } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose'
 import { ConfigService } from '../config/config.service'
-import { UserGetSelfRes } from '@smart-home/shared'
+import {
+  UserGetSelfRes,
+  UserUpdateReq,
+  UserUpdateRes,
+} from '@smart-home/shared'
 
 @Injectable()
 export class UserService {
@@ -21,6 +25,15 @@ export class UserService {
     private configService: ConfigService
   ) {
     this.userModel = userModel
+  }
+
+  serializeUser(userDocument: Document & User) {
+    return {
+      id: userDocument.id,
+      email: userDocument.email,
+      fullname: userDocument.fullname,
+      avatarUrl: userDocument.avatarURL,
+    }
   }
 
   async findByEmail(email: string) {
@@ -35,6 +48,21 @@ export class UserService {
     return await this.userModel
       .findByIdAndUpdate(id, update, { new: true })
       .exec()
+  }
+
+  async updateInfo(
+    userId: string,
+    update: UserUpdateReq
+  ): Promise<UserUpdateRes> {
+    const result = await this.update(userId, update)
+
+    if (!result) {
+      throw new NotFoundException('User not found')
+    }
+
+    return {
+      user: this.serializeUser(result),
+    }
   }
 
   async login(email: string, password: string): Promise<UserDocument> {
@@ -89,12 +117,7 @@ export class UserService {
     }
 
     return {
-      user: {
-        id: user.id,
-        email: user.email,
-        fullname: user.fullname,
-        avatarUrl: user.avatarURL,
-      },
+      user: this.serializeUser(user),
     }
   }
 }

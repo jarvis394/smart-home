@@ -13,6 +13,10 @@ import {
   ToggleDeviceOnOffReq,
   DeviceDeleteRes,
   DeviceDeleteReq,
+  UserUploadAvatarRes,
+  UserUploadAvatarReq,
+  UserUpdateReq,
+  UserUpdateRes,
 } from '@smart-home/shared'
 import { createApi } from '@reduxjs/toolkit/query/react'
 import baseQuery from './customFetchBase'
@@ -122,6 +126,25 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ['Device'],
     }),
+    uploadUserAvatar: builder.mutation<
+      UserUploadAvatarRes,
+      UserUploadAvatarReq
+    >({
+      query: (body) => ({
+        url: '/user/uploadAvatar',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['User'],
+    }),
+    updateUser: builder.mutation<UserUpdateRes, UserUpdateReq>({
+      query: (body) => ({
+        url: '/user/update',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['User'],
+    }),
   }),
 })
 
@@ -135,4 +158,6 @@ export const {
   useAddDeviceMutation,
   useToggleDeviceOnOffMutation,
   useDeleteDeviceMutation,
+  useUpdateUserMutation,
+  useUploadUserAvatarMutation,
 } = apiSlice
