@@ -29,7 +29,7 @@ export class AuthService {
       email: user.email,
       fullname: user.fullname,
       id: user.id,
-      avatarUrl: user.avatarURL,
+      avatarUrl: user.avatarUrl,
     }
   }
 

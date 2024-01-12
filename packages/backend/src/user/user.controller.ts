@@ -21,12 +21,15 @@ import {
 import { RequestWithUser } from '../auth/auth.controller'
 import { JwtAuthGuard } from '../auth/strategies/jwt.strategy'
 import { FileInterceptor } from '@nestjs/platform-express'
-import { diskStorage } from 'multer'
-import { extname } from 'path'
+import { ConfigService } from '../config/config.service'
+import 'multer'
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly configService: ConfigService
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Get()
@@ -45,24 +48,13 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Post('uploadAvatar')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (_req, file, cb) => {
-          const randomName = Array(32)
-            .fill(null)
-            .map(() => Math.round(Math.random() * 16).toString(16))
-            .join('')
-          cb(null, `${randomName}${extname(file.originalname)}`)
-        },
-      }),
-    })
-  )
-  uploadFile(
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadFile(
+    @Request() req: RequestWithUser,
     @UploadedFile(
       new ParseFilePipe({
         validators: [
+          /** 1 MB max size */
           new MaxFileSizeValidator({ maxSize: 100000 }),
           new FileTypeValidator({
             fileType: '.(png|jpeg|jpg|webp)',
@@ -71,7 +63,7 @@ export class UserController {
       })
     )
     file: Express.Multer.File
-  ): UserUploadAvatarRes {
-    return { avatarUrl: file.destination }
+  ): Promise<UserUploadAvatarRes> {
+    return await this.userService.updateAvatar(req.user.userId, file)
   }
 }

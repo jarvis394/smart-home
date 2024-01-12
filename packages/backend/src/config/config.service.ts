@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService as BaseConfigService } from '@nestjs/config'
+import { path as rootPath } from 'app-root-path'
+import path from 'path'
 
 type EnvSchema = {
   PORT: string
@@ -19,6 +21,14 @@ export class ConfigService {
 
   get MONGO_URL() {
     return this.configService.getOrThrow('MONGO_URL')
+  }
+
+  get UPLOADS_QUALITY() {
+    return 70
+  }
+
+  get UPLOADS_PATH() {
+    return path.join(rootPath, 'uploads')
   }
 
   get JWT_KEY() {

@@ -19,6 +19,7 @@ import { useAppDispatch, useAppSelector } from 'src/store'
 import { FetchingState } from 'src/types/FetchingState'
 import { logout } from 'src/store/auth'
 import { useLogoutMutation } from 'src/api/index'
+import UserAvatar from '../UserAvatar'
 
 const ModalContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -151,13 +152,7 @@ const AddDeviceAndAvatar: React.FC = () => {
             </Box>
           )}
           {userFetchState === FetchingState.FULFILLED && (
-            <Avatar
-              alt="User avatar"
-              sx={{ width: 32, height: 32 }}
-              src={user?.avatarUrl}
-            >
-              {user?.fullname[0]}
-            </Avatar>
+            <UserAvatar avatarUrl={user?.avatarUrl} fullname={user?.fullname} />
           )}
         </IconButton>
       )}

@@ -112,6 +112,11 @@ const slice = createSlice({
     ) => {
       state.state = payload
     },
+    setUserAvatar: (state, { payload }: PayloadAction<string>) => {
+      if (!state.user) return
+
+      state.user.avatarUrl = payload
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -152,6 +157,7 @@ export const {
   logout,
   setAccessToken,
   setRefreshToken,
+  setUserAvatar,
 } = slice.actions
 
 export default slice.reducer

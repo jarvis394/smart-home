@@ -7,14 +7,20 @@ import {
 } from '@nestjs/common'
 import { compare, hash } from 'bcryptjs'
 import { User, UserDocument } from './schemas/user.schema'
-import { Model, UpdateQuery, Document } from 'mongoose'
+import { Model, UpdateQuery } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose'
 import { ConfigService } from '../config/config.service'
 import {
+  ApiUser,
   UserGetSelfRes,
   UserUpdateReq,
   UserUpdateRes,
+  UserUploadAvatarRes,
 } from '@smart-home/shared'
+import { DeviceDocument } from '../devices/schemas/device.schema'
+import { v4 as uuidv4 } from 'uuid'
+import sharp from 'sharp'
+import * as path from 'path'
 
 @Injectable()
 export class UserService {
@@ -27,12 +33,12 @@ export class UserService {
     this.userModel = userModel
   }
 
-  serializeUser(userDocument: Document & User) {
+  serializeUser(userDocument: UserDocument): ApiUser {
     return {
       id: userDocument.id,
       email: userDocument.email,
       fullname: userDocument.fullname,
-      avatarUrl: userDocument.avatarURL,
+      avatarUrl: userDocument.avatarUrl,
     }
   }
 
@@ -63,6 +69,20 @@ export class UserService {
     return {
       user: this.serializeUser(result),
     }
+  }
+
+  async addDevice(device: DeviceDocument): Promise<UserDocument> {
+    const result = await this.update(device.userId, {
+      $push: {
+        devices: device._id,
+      },
+    })
+
+    if (!result) {
+      throw new NotFoundException('User not found')
+    }
+
+    return result
   }
 
   async login(email: string, password: string): Promise<UserDocument> {
@@ -119,5 +139,28 @@ export class UserService {
     return {
       user: this.serializeUser(user),
     }
+  }
+
+  async updateAvatar(
+    userId: string,
+    file: Express.Multer.File
+  ): Promise<UserUploadAvatarRes> {
+    const url = await this.saveFileToUploads(file.buffer)
+    this.update(userId, { avatarUrl: url })
+    return { avatarUrl: url }
+  }
+
+  private async saveFileToUploads(buffer: Buffer): Promise<string> {
+    const fileName = `${uuidv4()}.webp`
+    const savePath = path.join(this.configService.UPLOADS_PATH, fileName)
+    const url = `/uploads/${fileName}`
+
+    await sharp(buffer)
+      .webp({
+        quality: this.configService.UPLOADS_QUALITY,
+      })
+      .toFile(savePath)
+
+    return url
   }
 }

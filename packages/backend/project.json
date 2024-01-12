@@ -14,12 +14,6 @@
         "outputPath": "dist/packages/backend",
         "main": "packages/backend/src/main.ts",
         "tsConfig": "packages/backend/tsconfig.app.json",
-        "assets": [
-          {
-            "include": "uploads/**/*",
-            "watchAssets": true
-          }
-        ],
         "webpackConfig": "packages/backend/webpack.config.js"
       },
       "configurations": {

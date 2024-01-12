@@ -1,5 +1,5 @@
 import { AttachFileOutlined } from '@mui/icons-material'
-import { Avatar, CircularProgress, alpha, styled } from '@mui/material'
+import { CircularProgress, alpha, styled } from '@mui/material'
 import React, { useRef, useState } from 'react'
 import {
   useUpdateUserMutation,
@@ -9,6 +9,7 @@ import { AppBar } from 'src/components/AppBar'
 import Button from 'src/components/Button'
 import Input from 'src/components/Input'
 import Switch from 'src/components/Switch'
+import UserAvatar from 'src/components/UserAvatar'
 import { BUTTON_MAX_WIDTH } from 'src/config/constants'
 import { useAppDispatch, useAppSelector } from 'src/store'
 import { setTheme } from 'src/store/app'
@@ -127,13 +128,7 @@ const UploadAvatar: React.FC = () => {
         ref={$fileInput}
       />
       {!isLoading && (
-        <Avatar
-          alt="User avatar"
-          sx={{ width: 32, height: 32 }}
-          src={avatarUrl}
-        >
-          {user?.fullname[0]}
-        </Avatar>
+        <UserAvatar avatarUrl={avatarUrl} fullname={user?.fullname} />
       )}
       {isLoading && <CircularProgress color="inherit" size={32} />}
       <AttachFileOutlined />

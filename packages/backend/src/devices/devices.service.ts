@@ -1,18 +1,20 @@
 import { ForbiddenException, Injectable } from '@nestjs/common'
 import { AddDeviceReq, DeviceType, Device as IDevice } from '@smart-home/shared'
-import { Device } from './schemas/device.schema'
-import { Model, Document } from 'mongoose'
+import { Device, DeviceDocument } from './schemas/device.schema'
+import { Model } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose'
+import { UserService } from '../user/user.service'
 
 @Injectable()
 export class DevicesService {
   constructor(
-    @InjectModel(Device.name) private readonly deviceModel: Model<Device>
+    @InjectModel(Device.name) private readonly deviceModel: Model<Device>,
+    private userService: UserService
   ) {
     this.deviceModel = deviceModel
   }
 
-  serializeDevice(deviceDocument: Document & Device): IDevice {
+  serializeDevice(deviceDocument: DeviceDocument): IDevice {
     return {
       id: deviceDocument.id,
       userId: deviceDocument.userId,
@@ -80,6 +82,9 @@ export class DevicesService {
     newDevice.type = data.type
 
     const result = await this.deviceModel.create(newDevice)
+
+    await this.userService.addDevice(result)
+
     return this.serializeDevice(result)
   }
 }

@@ -20,7 +20,7 @@ import {
 } from '@smart-home/shared'
 import { createApi } from '@reduxjs/toolkit/query/react'
 import baseQuery from './customFetchBase'
-import { setAccessToken, setRefreshToken } from 'src/store/auth'
+import { setAccessToken, setRefreshToken, setUserAvatar } from 'src/store/auth'
 
 export const apiSlice = createApi({
   baseQuery,
@@ -135,6 +135,10 @@ export const apiSlice = createApi({
         method: 'POST',
         body,
       }),
+      async onQueryStarted(_args, { dispatch, queryFulfilled }) {
+        const { data } = await queryFulfilled
+        dispatch(setUserAvatar(data.avatarUrl))
+      },
       invalidatesTags: ['User'],
     }),
     updateUser: builder.mutation<UserUpdateRes, UserUpdateReq>({

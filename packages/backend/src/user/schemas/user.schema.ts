@@ -11,7 +11,7 @@ export class User {
   fullname: string
 
   @Prop({ required: false })
-  avatarURL?: string
+  avatarUrl?: string
 
   @Prop({ required: true })
   email: string

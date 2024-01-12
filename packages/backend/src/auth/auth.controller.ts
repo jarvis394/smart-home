@@ -42,13 +42,13 @@ export class AuthController {
 
   @Post('register')
   async register(
-    @Body() { email, fullname, password, avatarURL }: RegisterDto
+    @Body() { email, fullname, password, avatarUrl }: RegisterDto
   ): Promise<UserRegisterRes> {
     return await this.authService.register({
       email,
       fullname,
       password,
-      avatarURL,
+      avatarUrl,
     })
   }
 

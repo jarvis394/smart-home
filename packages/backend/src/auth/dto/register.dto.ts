@@ -10,5 +10,5 @@ export class RegisterDto {
   @IsNotEmpty({ message: 'Fullname field is required' })
   fullname: string
 
-  avatarURL?: string
+  avatarUrl?: string
 }
