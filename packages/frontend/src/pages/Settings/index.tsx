@@ -83,6 +83,7 @@ const UploadButtonRoot = styled('button')(({ theme }) => ({
   fontWeight: 500,
   padding: theme.spacing(1.25, 2),
   paddingRight: theme.spacing(1.25),
+  color: theme.palette.text.primary,
 }))
 
 const UploadAvatar: React.FC = () => {
