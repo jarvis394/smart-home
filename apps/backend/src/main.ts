@@ -4,6 +4,7 @@ import { AppModule } from './app/app.module'
 import { ConfigService } from './config/config.service'
 import { NestExpressApplication } from '@nestjs/platform-express'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
+import { MicroserviceOptions, Transport } from '@nestjs/microservices'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule)
@@ -29,6 +30,17 @@ async function bootstrap() {
     deepScanRoutes: true,
   })
   SwaggerModule.setup('api', app, document)
+
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: ['amqp://localhost:5672'],
+      queue: 'main_app_queue',
+      queueOptions: {
+        durable: false,
+      },
+    },
+  })
 
   await app.listen(config.PORT)
   Logger.log(

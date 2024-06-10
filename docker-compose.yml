@@ -1,0 +1,64 @@
+version: '3.8'
+services:
+  devices:
+    container_name: devices-service
+    build:
+      context: .
+      dockerfile: apps/devices/Dockerfile
+    ports:
+      - '3001:3000'
+    networks:
+      - mongo_net
+
+  frontend:
+    container_name: frontend
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    ports:
+      - '127.0.0.1:9000:4200'
+    networks:
+      - mongo_net
+
+  backend:
+    container_name: backend
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    ports:
+      - '127.0.0.1:8000:8000'
+    networks:
+      - mongo_net
+    command: sh -c "yarn nx run backend:serve"
+
+  mongodb:
+    image: mongo:4.2.3-bionic
+    container_name: mongodb
+    ports:
+      - 27017:27017
+    volumes:
+      # seeding scripts
+      - ./mongo-entrypoint:/docker-entrypoint-initdb.d
+      # named volumes
+      - mongodb:/data/db
+      - mongoconfig:/data/configdb
+    networks:
+      - mongo_net
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    networks:
+      - mongo_net
+
+volumes:
+  # default dir on Ubuntu: /var/lib/docker/volumes
+  mongodb:
+  mongoconfig:
+
+networks:
+  mongo_net:
+    driver: bridge

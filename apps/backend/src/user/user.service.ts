@@ -16,8 +16,8 @@ import {
   UserUpdateReq,
   UserUpdateRes,
   UserUploadAvatarRes,
+  Device,
 } from '@smart-home/shared'
-import { DeviceDocument } from '../devices/schemas/device.schema'
 import { v4 as uuidv4 } from 'uuid'
 import sharp from 'sharp'
 import * as path from 'path'
@@ -71,10 +71,10 @@ export class UserService {
     }
   }
 
-  async addDevice(device: DeviceDocument): Promise<UserDocument> {
+  async addDevice(device: Device): Promise<UserDocument> {
     const result = await this.update(device.userId, {
       $push: {
-        devices: device._id,
+        devices: device.id,
       },
     })
 

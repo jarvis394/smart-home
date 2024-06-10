@@ -10,14 +10,7 @@ import {
 import { DevicesService } from './devices.service'
 import { JwtAuthGuard } from '../auth/strategies/jwt.strategy'
 import { RequestWithUser } from '../auth/auth.controller'
-import {
-  AddDeviceReq,
-  AddDeviceRes,
-  DeviceDeleteRes,
-  DevicesGetRes,
-  FavoriteDeviceRes,
-  ToggleDeviceOnOffRes,
-} from '@smart-home/shared'
+import { AddDeviceReq } from '@smart-home/shared'
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 
 @ApiTags('devices')
@@ -28,21 +21,19 @@ export class DevicesController {
   @UseGuards(JwtAuthGuard)
   @Get()
   @ApiBearerAuth()
-  async getDevices(@Request() req: RequestWithUser): Promise<DevicesGetRes> {
+  async getDevices(@Request() req: RequestWithUser) {
     const devices = await this.devicesService.getDevices(req.user.userId)
-    return { devices }
+    return devices
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('favorites')
   @ApiBearerAuth()
-  async getFavoriteDevices(
-    @Request() req: RequestWithUser
-  ): Promise<DevicesGetRes> {
+  async getFavoriteDevices(@Request() req: RequestWithUser) {
     const devices = await this.devicesService.getFavoriteDevices(
       req.user.userId
     )
-    return { devices }
+    return devices
   }
 
   @UseGuards(JwtAuthGuard)
@@ -51,31 +42,25 @@ export class DevicesController {
   async toggleFavorite(
     @Request() req: RequestWithUser,
     @Param('id') id: string
-  ): Promise<FavoriteDeviceRes> {
+  ) {
     const state = await this.devicesService.toggleFavorite(req.user.userId, id)
-    return { state }
+    return state
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id/onOff/toggle')
   @ApiBearerAuth()
-  async toggleOnOff(
-    @Request() req: RequestWithUser,
-    @Param('id') id: string
-  ): Promise<ToggleDeviceOnOffRes> {
+  async toggleOnOff(@Request() req: RequestWithUser, @Param('id') id: string) {
     const state = await this.devicesService.toggleOnOff(req.user.userId, id)
-    return { state }
+    return state
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id/delete')
   @ApiBearerAuth()
-  async delete(
-    @Request() req: RequestWithUser,
-    @Param('id') id: string
-  ): Promise<DeviceDeleteRes> {
+  async delete(@Request() req: RequestWithUser, @Param('id') id: string) {
     const state = await this.devicesService.delete(req.user.userId, id)
-    return { ok: state }
+    return state
   }
 
   @UseGuards(JwtAuthGuard)
@@ -84,11 +69,11 @@ export class DevicesController {
   async addDevice(
     @Request() req: RequestWithUser,
     @Body() newDevice: AddDeviceReq
-  ): Promise<AddDeviceRes> {
+  ) {
     const device = await this.devicesService.addDevice(
       req.user.userId,
       newDevice
     )
-    return { device }
+    return device
   }
 }
