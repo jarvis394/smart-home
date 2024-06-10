@@ -22,7 +22,7 @@ export const useHorizontalScroll = <T extends HTMLElement = HTMLElement>() => {
 
         setLeft(el.scrollLeft + e.deltaY)
       }
-      el.addEventListener('wheel', onWheel, { passive: true })
+      el.addEventListener('wheel', onWheel)
       return () => el.removeEventListener('wheel', onWheel)
     }
 
