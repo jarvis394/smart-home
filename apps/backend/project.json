@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/backend/src",
+  "sourceRoot": "apps/backend/src",
   "projectType": "application",
   "targets": {
     "build": {
@@ -11,10 +11,10 @@
       "options": {
         "target": "node",
         "compiler": "tsc",
-        "outputPath": "dist/packages/backend",
-        "main": "packages/backend/src/main.ts",
-        "tsConfig": "packages/backend/tsconfig.app.json",
-        "webpackConfig": "packages/backend/webpack.config.js"
+        "outputPath": "dist/apps/backend",
+        "main": "apps/backend/src/main.ts",
+        "tsConfig": "apps/backend/tsconfig.app.json",
+        "webpackConfig": "apps/backend/webpack.config.js"
       },
       "configurations": {
         "development": {},
