@@ -23,7 +23,7 @@ import { User, UserSchema } from '../user/schemas/user.schema'
         return ClientProxyFactory.create({
           transport: Transport.RMQ,
           options: {
-            urls: ['amqp://localhost:5672'],
+            urls: ['amqp://rabbitmq:5672'],
             queue: 'devices_service_queue',
             queueOptions: {
               durable: false,
