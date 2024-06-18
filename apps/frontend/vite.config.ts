@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
-import mkcert from 'vite-plugin-mkcert'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
@@ -21,5 +20,5 @@ export default defineConfig({
     cssMinify: true,
   },
 
-  plugins: [tsconfigPaths(), react(), nxViteTsPaths(), mkcert()],
+  plugins: [tsconfigPaths(), react(), nxViteTsPaths()],
 })

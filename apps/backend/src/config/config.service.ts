@@ -9,6 +9,7 @@ type EnvSchema = {
   JWT_KEY: string
   JWT_ACCESS_TOKEN_TTL: string
   JWT_REFRESH_TOKEN_TTL: string
+  RABBITMQ_URL: string
 }
 
 @Injectable()
@@ -21,6 +22,10 @@ export class ConfigService {
 
   get MONGO_URL() {
     return this.configService.getOrThrow('MONGO_URL')
+  }
+
+  get RABBITMQ_URL() {
+    return this.configService.getOrThrow('RABBITMQ_URL')
   }
 
   get UPLOADS_QUALITY() {

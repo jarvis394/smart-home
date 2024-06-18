@@ -55,7 +55,7 @@ const Login: React.FC = () => {
     formState: { errors },
     getValues,
   } = useForm<{ email: string; password: string }>()
-  const [login] = useLoginMutation()
+  const [login, { isLoading }] = useLoginMutation()
   const dispatch = useAppDispatch()
 
   const onSubmit = () => {
@@ -114,7 +114,9 @@ const Login: React.FC = () => {
               })}
             />
           </FillContainer>
-          <Button type="submit">Войти</Button>
+          <Button disabled={isLoading} type="submit">
+            Войти
+          </Button>
         </Form>
         <Button onClick={handleGoToRegisterClick} variant="default">
           Зарегестрироваться

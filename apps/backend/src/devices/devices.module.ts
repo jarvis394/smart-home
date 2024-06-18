@@ -19,11 +19,12 @@ import { User, UserSchema } from '../user/schemas/user.schema'
     UserService,
     {
       provide: 'DEVICES_SERVICE',
-      useFactory: () => {
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
         return ClientProxyFactory.create({
           transport: Transport.RMQ,
           options: {
-            urls: ['amqp://rabbitmq:5672'],
+            urls: [config.RABBITMQ_URL],
             queue: 'devices_service_queue',
             queueOptions: {
               durable: false,

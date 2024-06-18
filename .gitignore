@@ -42,3 +42,5 @@ Thumbs.db
 uploads
 postgres
 .nx
+
+mongo-entrypoint

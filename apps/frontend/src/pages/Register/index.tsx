@@ -56,7 +56,7 @@ const Register: React.FC = () => {
     getValues,
   } = useForm<{ email: string; password: string; fullname: string }>()
   const dispatch = useAppDispatch()
-  const [registerUser] = useRegisterMutation()
+  const [registerUser, { isLoading }] = useRegisterMutation()
 
   const onSubmit = () => {
     const { email, password, fullname } = getValues()
@@ -123,7 +123,9 @@ const Register: React.FC = () => {
               })}
             />
           </FillContainer>
-          <Button type="submit">Регистрация</Button>
+          <Button disabled={isLoading} type="submit">
+            Регистрация
+          </Button>
         </Form>
         <Button onClick={handleGoToLoginClick} variant="default">
           Войти с существующим аккаунтом

@@ -79,9 +79,12 @@ export const App: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const theme = THEME_NAME_TO_MUI_THEME[themeName]
+  const isLoggingInOrRegistering =
+    route?.alias === 'login' || route?.alias === 'register'
   const shouldRenderSpinner =
-    userFetchState === FetchingState.PENDING ||
-    userFetchState === FetchingState.IDLE
+    (userFetchState === FetchingState.PENDING ||
+      userFetchState === FetchingState.IDLE) &&
+    !isLoggingInOrRegistering
 
   React.useEffect(() => {
     dispatch(fetchUserSelf())

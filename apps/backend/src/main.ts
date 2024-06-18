@@ -34,7 +34,7 @@ async function bootstrap() {
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: {
-      urls: ['amqp://rabbitmq:5672'],
+      urls: [config.RABBITMQ_URL],
       queue: 'main_app_queue',
       queueOptions: {
         durable: false,
@@ -42,6 +42,9 @@ async function bootstrap() {
     },
   })
 
+  app.enableCors({
+    origin: '*',
+  })
   await app.listen(config.PORT)
   Logger.log(
     `🚀 Application is running on: http://localhost:${config.PORT}/${globalPrefix}`
